@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "384201530389",
+    "firebase_url": "https://touris-78f26-default-rtdb.firebaseio.com",
+    "project_id": "touris-78f26",
+    "storage_bucket": "touris-78f26.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:384201530389:android:4d620349f32568deca021c",
+        "android_client_info": {
+          "package_name": "com.example.touris"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "384201530389-ilcb66uuaf2ldtn2tonbhkak7edl7trs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.touris",
+            "certificate_hash": "f62d21a1fef6f2bbce600f0a948558d5bc95338d"
+          }
+        },
+        {
+          "client_id": "384201530389-falt0mepjmqeoensgbu32f7ev51hnjgr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByUYKCFYi60hL8wn0ceCREr7xx9DrWUzk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "384201530389-falt0mepjmqeoensgbu32f7ev51hnjgr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
