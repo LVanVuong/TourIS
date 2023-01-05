@@ -36,6 +36,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -44,6 +45,7 @@ import retrofit2.Response;
 
 public class LoginFragment extends Fragment {
     SharedPreferences sharedPreferences;
+    private List<User> mListUser;
     EditText UserName, Password;
     TextView Forget_Password;
     ImageView google;
@@ -60,12 +62,12 @@ public class LoginFragment extends Fragment {
         Login = viewGroup.findViewById(R.id.button);
         checkbox = viewGroup.findViewById(R.id.checkbox);
         google = viewGroup.findViewById(R.id.google);
+        mListUser = new ArrayList<>();
+        getUsernName();
         sharedPreferences = getContext().getSharedPreferences("data", Context.MODE_PRIVATE);
-
         UserName.setText(sharedPreferences.getString("taikhoan", ""));
         Password.setText(sharedPreferences.getString("matkhau", ""));
         checkbox.setChecked(sharedPreferences.getBoolean("checked", false));
-
         Login();
 
         return  viewGroup;
@@ -76,51 +78,53 @@ public class LoginFragment extends Fragment {
             public void onClick(View view) {
                 String email = UserName.getText().toString().trim();
                 String password = Password.getText().toString().trim();
-
+                if(mListUser.isEmpty()){
+                    return;
+                }
                 if(email.isEmpty() || password.isEmpty()){
                     Toast.makeText(getActivity(),"Vui lòng nhập email hoặc password",Toast.LENGTH_SHORT).show();
                 }else{
-                    LoginRequest loginRequest = new LoginRequest();
-                    loginRequest.setUsername(email);
-                    loginRequest.setPassword(password);
-                    getUsernName(loginRequest);
-                    CheckBox(checkbox,loginRequest);
+
+                   for(User user: mListUser){
+                       if(email.equals(user.getUser_name()) && password.equals(user.getPassword())){
+                           startActivity(new Intent(getActivity(),MainActivity.class));
+                           CheckBox(checkbox,email,password);
+                       }
+                       else{
+                           String message = "Error occurred please try again later";
+                           Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+                       }
+                   }
                 }
             }
         });
     }
 
 
-    private void getUsernName(LoginRequest loginRequest){
+    private void getUsernName(){
 
-        Call<User> call = APIService.getService().GetUsername(loginRequest);
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if(response.isSuccessful()){
-                    User user = (User) response.body();
-                    startActivity(new Intent(getActivity(),MainActivity.class).putExtra("data",user));
-                }else {
-                    String message = "Error occurred please try again later";
+        Dataservice dataservice = APIService.getService();
+        Call<List<User>> call = dataservice.GetUsername();
+            call.enqueue(new Callback<List<User>>() {
+                @Override
+                public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                        mListUser = response.body();
+                }
+
+                @Override
+                public void onFailure(Call<List<User>> call, Throwable t) {
+                    String message = t.getLocalizedMessage();
                     Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
                 }
-
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                String message = t.getLocalizedMessage();
-                Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
-
-            }
-        });
+            });
     }
-    private void CheckBox(CheckBox checkbox,LoginRequest loginRequest) {
+
+    private void CheckBox(CheckBox checkbox,String email, String password) {
 
         if (checkbox.isChecked()) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("taikhoan", loginRequest.getUsername());
-            editor.putString("matkhau", loginRequest.getPassword());
+            editor.putString("taikhoan", email);
+            editor.putString("matkhau", password);
             editor.putBoolean("checked", true);
             editor.commit();
         } else {

@@ -14,7 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class APIRetrofitClient {
     private  static Retrofit retrofit = null;
 
-    public static Retrofit getClient(String base_url){
+    public static Retrofit getClient(String url){
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .readTimeout(10000, TimeUnit.SECONDS)
                 .writeTimeout(10000,TimeUnit.SECONDS)
@@ -25,7 +25,7 @@ public class APIRetrofitClient {
 
         Gson gson = new GsonBuilder().setLenient().create();
         retrofit = new Retrofit.Builder()
-                .baseUrl(base_url)
+                .baseUrl(url)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();

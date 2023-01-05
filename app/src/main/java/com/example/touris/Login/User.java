@@ -6,48 +6,48 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class User implements Serializable {
-    @SerializedName("id")
+    @SerializedName("ID")
     @Expose
-    private String id;
-    @SerializedName("username")
+    private String ID;
+    @SerializedName("User_name")
     @Expose
-    private String username;
-    @SerializedName("password")
+    private String User_name;
+    @SerializedName("Password")
     @Expose
-    private String topic;
-    @SerializedName("topic")
+    private String Password;
+    @SerializedName("Topic")
     @Expose
-    private String password;
+    private String Topic;
 
-    public String getId() {
-        return id;
+    public String getID() {
+        return ID;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
+    public String getUser_name() {
+        return User_name;
+    }
+
+    public void setUser_name(String user_name) {
+        User_name = user_name;
     }
 
     public String getPassword() {
-        return password;
+        return Password;
     }
 
     public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+        Password = password;
     }
 
     public String getTopic() {
-        return topic;
+        return Topic;
     }
 
     public void setTopic(String topic) {
-        this.topic = topic;
+        Topic = topic;
     }
 }
