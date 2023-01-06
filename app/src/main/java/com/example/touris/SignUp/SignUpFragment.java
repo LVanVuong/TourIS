@@ -2,6 +2,7 @@ package com.example.touris.SignUp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,6 @@ import androidx.fragment.app.Fragment;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -25,9 +25,14 @@ import com.example.touris.MainActivity;
 import com.example.touris.R;
 import com.example.touris.Sever.APIService;
 import com.example.touris.Sever.Dataservice;
+import com.example.touris.Sever.responsemodel;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignUpFragment extends Fragment {
     EditText mEmail, mPass, mCfPass, mPhone;
@@ -41,6 +46,12 @@ public class SignUpFragment extends Fragment {
         mPass = viewGroup.findViewById(R.id.pass_sign_up);
         mCfPass = viewGroup.findViewById(R.id.pass_sign_up_1);
         mPhone = viewGroup.findViewById(R.id.phone);
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SignUp();
+            }
+        });
 
         return viewGroup;
 
@@ -54,35 +65,30 @@ public class SignUpFragment extends Fragment {
         if (!pass.equals(cfpass)) {
             Toast.makeText(getActivity(), "Password mismatch", Toast.LENGTH_SHORT).show();
         } else if (!email.equals("") && !phone.equals("") && !pass.equals("") && pass.equals(cfpass)) {
-            StringRequest request = new StringRequest(Request.Method.POST, dataservice.toString(), new Response.Listener<String>() {
+            Call<responsemodel> call = dataservice.PostUser(phone,pass,email);
+            call.enqueue(new Callback<responsemodel>() {
                 @Override
-                public void onResponse(String response) {
-                    if (response.equals("true")) {
-                        startActivity(new Intent(getActivity(), MainActivity.class));
-
-                    } else if (response.equals("false")) {
-                        Toast.makeText(getActivity(), "Invalid Login/Password", Toast.LENGTH_SHORT).show();
+                public void onResponse(Call<responsemodel> call, Response<responsemodel> response) {
+                   responsemodel ojb = response.body();
+                    String output = ojb.getMessage();
+                    if(output.equals("exist")){
+                        Toast.makeText(getActivity(),"Email Exist",Toast.LENGTH_SHORT).show();
                     }
+                    if(output.equals("true")){
+                        startActivity(new Intent(getActivity(),MainActivity.class));
+                    }
+                    else{
+                        Toast.makeText(getActivity(),"Invalid email or password",Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<responsemodel> call, Throwable t) {
+                    String message = "Error occurred please try again later";
+                    Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
 
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getActivity(), error.toString().trim(), Toast.LENGTH_SHORT).show();
-                }
-            }) {
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    Map<String, String> data = new HashMap<>();
-                    data.put("user_name", email);
-                    data.put("password", pass);
-                    return data;
-                }
-            };
-            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-            requestQueue.add(request);
-        } else {
-            Toast.makeText(getActivity(), " Don't Empty Field ", Toast.LENGTH_SHORT).show();
+            });
         }
     }
 }

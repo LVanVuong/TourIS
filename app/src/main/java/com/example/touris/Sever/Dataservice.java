@@ -1,19 +1,20 @@
 package com.example.touris.Sever;
 
-import com.android.volley.Request;
-import com.example.touris.Login.User;
-
-import java.util.List;
-
 import retrofit2.Call;
-import retrofit2.http.GET;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
-import retrofit2.http.Query;
 
 public interface Dataservice {
 
-    @GET("user.php")
-    Call<List<User>> GetUsername();
+
+    @FormUrlEncoded
+    @POST("login.php")
+    Call<responsemodel>verifyUser(@Field("email") String email,
+                                  @Field("password") String password);
+    @FormUrlEncoded
     @POST("register.php")
-    Request<List<User>> PostUser();
+    Call<responsemodel> PostUser(@Field("username") String username,
+                        @Field("password") String password,
+                        @Field("email") String email);
 }
